@@ -3,9 +3,6 @@
 #include "Decryptor.h"
 #include <chrono>
 
-
-Decryptor::Decryptor()
-{};
 bool Decryptor::Decrypt(std::vector<unsigned char> chipher_text)
 {
     std::vector<unsigned char> hashFromCryptoFile;
@@ -24,17 +21,13 @@ bool Decryptor::Decrypt(std::vector<unsigned char> chipher_text)
         CalculateHash(DecryptText, hashDecryptoFile);
         if (!CompareHASH(hashFromCryptoFile, hashDecryptoFile))
         {
-            return false;//"Password is wrong!..."
+            return false;   //"Password is wrong"
         }
         WriteFile("my_decrypto_file1", DecryptText);
         return true;
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }
-
 
 bool Decryptor::DecryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned char>& chipherText)
 {

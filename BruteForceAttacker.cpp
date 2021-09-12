@@ -7,35 +7,20 @@
 #include <thread>
 #include "Counter.h"
 
-BruteForceAttacker::BruteForceAttacker(bool write_passcandidate_to_file, unsigned int number_thread_and_decryptors, std::string file_path, int number_in_cycle_main)
-    :encryptor_m(std::make_unique<Encryptor>()),
-    timer_m(std::make_shared <Timer>()),
-    number_thread_and_decryptors_m(number_thread_and_decryptors),
-    decrypt_status_m(false),
-    number_in_cycle_main_m(number_in_cycle_main),
-    write_to_file_all_tried_passcandidate_m(write_passcandidate_to_file),
-    file_path_m(file_path)
-{}
+const int number_of_candidate_passwords_for_one_run{ 10000 };
 
-BruteForceAttacker::~BruteForceAttacker()
-{}
-
-void BruteForceAttacker::myEncryptFile()
-{ 
-    try
-    {
-        encryptor_m->setPassForCrypting();
-        encryptor_m -> Encrypt();
-    }
-    catch (const std::runtime_error& ex)
-    {
-        std::cerr << ex.what();
-    }    
+BruteForceAttacker::BruteForceAttacker(bool write_passcandidate_to_file, unsigned int number_thread_and_decryptors, std::string file_path)
+    : number_thread_and_decryptors_m(number_thread_and_decryptors)
+    , decrypt_status_m(false)
+    , number_in_cycle_main_m(number_of_candidate_passwords_for_one_run)
+    , write_to_file_all_tried_passcandidate_m(write_passcandidate_to_file)
+    , file_path_m(file_path)
+{
+    myReadFile(file_path_m, text_from_file_m);
 }
 
 void BruteForceAttacker::StartAsyncThreadsWithDecriporInside(unsigned short int number_thread_and_decryptors_m, std::string* array_all_pos_pass, std::shared_ptr<Counter> my_counter)
 {
-
     int size_array_for_one_thread= number_in_cycle_main_m/number_thread_and_decryptors_m;
     int start_index_in_array;
     std::future<std::string>* future_assync_array = new std::future<std::string>[number_thread_and_decryptors_m];
@@ -47,15 +32,16 @@ void BruteForceAttacker::StartAsyncThreadsWithDecriporInside(unsigned short int 
     for (unsigned i = 0; i < number_thread_and_decryptors_m; i++)
     {
         std::string current_candadate = future_assync_array[i].get();
-        if (current_candadate != "")
+        if ( !current_candadate.empty() )
         {
             decrypt_status_m = true;
             password_that_opened_the_file_m = current_candadate;
+            break;
         }
     }
 }
 
-void BruteForceAttacker::FunctionForPrintInThread(std::shared_ptr<Counter> my_counter, std::shared_ptr <Timer> my_timer)
+void BruteForceAttacker::FunctionForPrintInThread(std::shared_ptr<Counter> my_counter, Timer my_timer)
 {
     Printer free_printer;
     while (!decrypt_status_m)
@@ -67,13 +53,13 @@ void BruteForceAttacker::FunctionForPrintInThread(std::shared_ptr<Counter> my_co
 }
 
 void BruteForceAttacker::startDecrypt()
-{
-    myReadFile(file_path_m, text_from_file_m);
-    timer_m->startTimeCounting();
+{    
+    timer_.startTimeCounting();
     std::shared_ptr<Counter> my_shp_counter= std::make_shared<Counter>();
     my_shp_counter->SetNumberInCycle(number_in_cycle_main_m);
-    std::thread PrintInthread(&BruteForceAttacker::FunctionForPrintInThread, this, std::ref(my_shp_counter), std::ref(timer_m));
+    std::thread PrintInthread(&BruteForceAttacker::FunctionForPrintInThread, this, std::ref(my_shp_counter), std::ref(timer_));
     std::vector<char> pos_symbols_NEW = generatPossibleCharVectorNEW();
+
     int indexJ = 0;
     int indexN = 1;
     int indexI = 1;
@@ -85,43 +71,9 @@ void BruteForceAttacker::startDecrypt()
     while (!decrypt_status_m)
     { 
         int indexT = 0;
-        bunch_pass_candidates = CrackNEW2(number_for_all_threads, std::ref(indexJ), std::ref(indexN), std::ref(pos_symbols_NEW), std::ref(bunch_pass_candidates), all_tried_pass_m, std::ref(indexI), std::ref(big_loop_end), std::ref(indexT),std::ref(start_first));
+        bunch_pass_candidates = generatePasswordVariant(number_for_all_threads, std::ref(indexJ), std::ref(indexN), std::ref(pos_symbols_NEW), std::ref(bunch_pass_candidates), std::ref(indexI), std::ref(big_loop_end), std::ref(indexT), std::ref(start_first));
         StartAsyncThreadsWithDecriporInside(number_thread_and_decryptors_m, bunch_pass_candidates, my_shp_counter);
         my_shp_counter->ResetTriedPasscandidateInCycleMain();
     }
     PrintInthread.join();
 }
-
-void BruteForceAttacker::setDecryptStatus()
-{
-    decrypt_status_m = true;
-}
-bool BruteForceAttacker::GetDecryptStatus()
-{
-    return decrypt_status_m;
-}
-
-void BruteForceAttacker::WriteTriedCandidate(std::string current_pass_candidate)
-{
-    all_tried_pass_m.push_back(current_pass_candidate);
-}
-
-bool BruteForceAttacker::GetUserSolutionAboutWriteDownPasswords()
-{
-    return write_to_file_all_tried_passcandidate_m;
-}
-
-std::string& BruteForceAttacker::GetFilePath()
-{
-    return file_path_m;
-}
-
-std::vector<unsigned char> BruteForceAttacker::GetTextFromFileM()
-{
-    return text_from_file_m;
-}
-
-
-
-
-

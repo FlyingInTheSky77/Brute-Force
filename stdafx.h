@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <string>
 #include <vector>
 #include <fstream>
@@ -10,7 +9,6 @@
 #include "openssl/evp.h"
 #include "openssl/aes.h"
 #include "openssl/sha.h"
-
 
 #include "time.h"
 #include <windows.h>

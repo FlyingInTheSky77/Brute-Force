@@ -6,7 +6,6 @@ Counter::Counter()
     number_for_now_in_cycle_main_m(0)
 { }
 
-
 void Counter::Calculate()
 {
     std::lock_guard<std::mutex> locked(mutex_counter_m);
@@ -50,14 +49,13 @@ unsigned int& Counter::GetTriedPasscandidate()
     return number_all_tried_passcandidate_m;
 }
 
-int Counter::GetPresetNumberInMainCycle()
+unsigned int Counter::GetPresetNumberInMainCycle()
 {
     return number_in_cycle_main_m;
 }
 
-void Counter::SetNumberInCycle(int number_in_cycle_main)
+void Counter::SetNumberInCycle(unsigned int number_in_cycle_main)
 {
-
     number_in_cycle_main_m = number_in_cycle_main;
 }
 
