@@ -11,8 +11,9 @@ void Timer::startTimeCounting()
 	begin_time_m = clock();
 }
 
-void Timer::GetShowTime(std::string& show_time_line)
+std::string Timer::GetShowTime()
 {
+	std::string show_time_line;
 	unsigned int cur_time = getCurrentTimeWorking();
 	if (cur_time < 60)
 	{
@@ -29,8 +30,9 @@ void Timer::GetShowTime(std::string& show_time_line)
 		unsigned int cur_hours = cur_time / 3600;
 		unsigned int cur_min = (cur_time - cur_hours * 3600) / 60;
 		unsigned int cur_sec = (cur_time - cur_hours * 3600) % 60;
-		show_time_line = "Time elapsed:" + std::to_string(cur_hours) + "h " + std::to_string(cur_min) +"m " + std::to_string(cur_sec) + "s     ";
+		show_time_line = "Time elapsed:" + std::to_string(cur_hours) + "h " + std::to_string(cur_min) + "m " + std::to_string(cur_sec) + "s     ";
 	}
+	return show_time_line;
 }
 
 

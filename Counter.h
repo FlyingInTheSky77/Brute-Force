@@ -15,8 +15,8 @@ public:
     void IncreaseTriedPasscandidateInCycleMain();
     unsigned int& GetTriedPasscandidateInCycleMain();
     void ResetTriedPasscandidateInCycleMain();
-    int GetPresetNumberInMainCycle();
-    void SetNumberInCycle(int number_in_cycle_main);
+    unsigned int GetPresetNumberInMainCycle();
+    void SetNumberInCycle(unsigned int number_in_cycle_main);
     std::mutex& GetMutex();
     void WriteTriedCandidateToVector(std::string current_pass_candidate);
 private:
@@ -25,7 +25,7 @@ private:
     unsigned int number_for_now_in_cycle_main_m;
     std::mutex mutex_counter_m;
 
-    std::vector<std::string> vector_tried_pass;//member for debug
+    std::vector<std::string> vector_tried_pass; // for debug
     unsigned int number_in_cycle_main_m;
 };
 

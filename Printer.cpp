@@ -2,7 +2,6 @@
 #include "Printer.h"
 #include "Timer.h"
 #include "Counter.h"
-#include "myGuard.h"
 
 Printer::Printer()
 {
@@ -19,19 +18,21 @@ void Printer::ShowRightPass(std::string right_pass_m)
 	myCoord.X = 10;
 	myCoord.Y = 21;
 	SetConsoleCursorPosition(hConsole, myCoord);
-	std::cout << "We decrypt our file with pass:" << right_pass_m<<std::endl;
+	std::cout << "We decrypt our file with pass: " << right_pass_m<<std::endl;
 }
-void Printer::ShowInfo(std::shared_ptr<Counter> my_counter, std::shared_ptr <Timer> my_timer)
-{
-	
+
+void Printer::ShowInfo(std::shared_ptr<Counter> my_counter, Timer my_timer)
+{	
 	SetConsol();
 	std::lock_guard<std::mutex> loked(my_counter->GetMutex());
-	std::cout << my_counter->GetTriedPasscandidateInCycleMain() << " from " << my_counter->GetPresetNumberInMainCycle() << " passwords checked [";
-	std::cout<< (my_counter->GetTriedPasscandidateInCycleMain() * 100 / my_counter->GetPresetNumberInMainCycle()) << "%]             " << std::endl;
+	const unsigned int Number_In_Main_Cycle{ my_counter->GetPresetNumberInMainCycle() };
+	unsigned const int Tried_Passcandidate_In_Main_Cycle{ my_counter->GetTriedPasscandidateInCycleMain() };
+
+	std::cout << Tried_Passcandidate_In_Main_Cycle << " from " << Number_In_Main_Cycle << " passwords checked [";
+	std::cout<< ( Tried_Passcandidate_In_Main_Cycle * 100 / Number_In_Main_Cycle) << "%]             " << std::endl;
 	std::cout << "Speed:" << my_counter->getTriedPasscandidateInShowCycle() << "pass/sec           "<<std::endl;
-	my_timer->GetShowTime(show_time_line_m);
-	std::cout << show_time_line_m<<std::endl;
+
+	std::cout << my_timer.GetShowTime() << std::endl;
 	std::cout << "tried all passwords for now:" << my_counter->GetTriedPasscandidate() << std::endl;
-	my_counter->ResetTriedPasscandidateInShowCycle();
-	
+	my_counter->ResetTriedPasscandidateInShowCycle();	
 }

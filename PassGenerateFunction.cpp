@@ -3,8 +3,8 @@
 #include "PassGenerateFunction.h"
 #include "Counter.h"
 #include <stdio.h>
-//when we first start this function: indexN=1;indexJ=0;
-std::string* CrackNEW2(int cycle, int& indexJ, int& indexN, const std::vector<char>& chars, std::string* bunch_pass_candidates, std::vector<std::string>& all_tried_pass_m, int& indexI, bool& big_loop_end, int& indexT, bool& start_first)
+
+std::string* generatePasswordVariant(int cycle, int& indexJ, int& indexN, const std::vector<char>& chars, std::string* bunch_pass_candidates, int& indexI, bool& big_loop_end, int& indexT, bool& start_first)
 {   
     int n = chars.size();
     int i = indexI;
@@ -12,9 +12,7 @@ std::string* CrackNEW2(int cycle, int& indexJ, int& indexN, const std::vector<ch
     int j = indexJ;
         int number_candidate_in_one_cycle_m = cycle;
         while (true)
-        {            
-            
-            
+        {  
             if (start_first)
             {
                 for (int jt = 0; jt < i; jt++)
@@ -53,7 +51,6 @@ std::string* CrackNEW2(int cycle, int& indexJ, int& indexN, const std::vector<ch
                 }
             }
             big_loop_end = true;
-
         }  
 }
 std::vector<char>  generatPossibleCharVectorNEW()
