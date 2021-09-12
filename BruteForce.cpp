@@ -6,13 +6,8 @@
 
 int main(int argc, char* argv[])
 {
-    //std::string crypto_file_path = std::string(argv[1]);
-    //std::string is_log = std::string(argv[2]);
-
-    //std::string file_path = "C:\\repos\\Brute-Force\\1";
-
-    std::string file_path = "C:\\repos\\Brute-Force\\my_crypto_file1";
-    std::string is_log{ "--log_passwords" };
+    const std::string file_path = std::string(argv[1]);
+    const std::string is_log = std::string(argv[2]);
 
     try {
         InitialDataChecker DataChecker(file_path, is_log);
