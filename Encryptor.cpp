@@ -116,11 +116,6 @@ void Encryptor::CalculateHash()
     hash_.swap(hashTmp);
 }
 
-bool Encryptor::CompareHASH(const std::vector<unsigned char>& hash1, const std::vector<unsigned char>& hash2)
-{
-    return hash1 == hash2;
-}
-
 void Encryptor::setPassForCrypting()
 {
     std::cout << "What pass we should use to crypt file?" << std::endl;

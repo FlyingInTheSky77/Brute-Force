@@ -77,3 +77,24 @@ void BruteForceAttacker::startDecrypt()
     }
     PrintInthread.join();
 }
+
+std::string FreeFunctionToDecrypt(std::string* current_array_candidats_m, int start_index_in_array, const int& size_array_for_one_thread, const bool& write_cand_to_file, const std::vector<unsigned char>& text_from_file, std::shared_ptr<Counter> my_counter)
+{
+    Decryptor current_decryptor(text_from_file);
+    int current_index = start_index_in_array;
+    for (int i = start_index_in_array; i < size_array_for_one_thread + start_index_in_array; i++)
+    {
+        my_counter->Calculate();
+
+        if (current_decryptor.Decrypt(current_array_candidats_m[i]))
+        {
+            if (write_cand_to_file)
+            {
+                WriteDownToFileTriedPassword(current_array_candidats_m, start_index_in_array, i, my_counter->GetMutex());
+            }
+            return current_array_candidats_m[i]; //we guess the password
+        }
+    }
+    WriteDownToFileTriedPassword(current_array_candidats_m, start_index_in_array, size_array_for_one_thread, my_counter->GetMutex());
+    return "";//we didn't guess the password
+}
