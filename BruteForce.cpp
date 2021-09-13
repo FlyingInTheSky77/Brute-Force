@@ -7,7 +7,9 @@
 int main(int argc, char* argv[])
 {
     const std::string file_path = std::string(argv[1]);
-    const std::string is_log = std::string(argv[2]);
+    std::string is_log;
+    if (argc == 3)
+      is_log = std::string(argv[2]);
 
     try {
         InitialDataChecker DataChecker(file_path, is_log);
