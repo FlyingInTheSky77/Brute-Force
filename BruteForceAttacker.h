@@ -26,3 +26,5 @@ private:
     std::vector<unsigned char> text_from_file_m;
     int number_in_cycle_main_m;
 };
+
+std::string FreeFunctionToDecrypt(std::string* current_array_candidats_m, int start_index_in_array, const int& size_array_for_one_thread, const bool& write_cand_to_file, const std::vector<unsigned char>& text_from_file, std::shared_ptr<Counter> my_counter);

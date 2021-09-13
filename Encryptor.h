@@ -5,15 +5,10 @@ class Encryptor
 public:
 	Encryptor(const std::string file_path);
 	void Encrypt();
-	void EncryptAes();
-	void myReadFile();
-	void WriteFile();
-	void AppendToFile();
 	void PasswordToKey(std::string& password);
-	void CalculateHash();
-	bool CompareHASH(const std::vector<unsigned char>& hash1, const std::vector<unsigned char>& hash2);
 	void setPassForCrypting();
 	void start();
+
 private:
 	unsigned char key_m[EVP_MAX_KEY_LENGTH];
 	unsigned char iv_m[EVP_MAX_IV_LENGTH];
@@ -23,5 +18,11 @@ private:
 	std::vector<unsigned char> plainText_;
 	std::vector<unsigned char> hash_;
 	std::vector<unsigned char> chipherText_;
+
+	void EncryptAes();
+	void myReadFile();
+	void WriteFile();
+	void AppendToFile();
+	void CalculateHash();
 };
 

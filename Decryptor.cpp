@@ -3,36 +3,47 @@
 #include "Decryptor.h"
 #include <chrono>
 
-bool Decryptor::Decrypt(std::vector<unsigned char> chipher_text)
+const std::string decrypto_file_path{ "my_decrypto_file1" };
+
+Decryptor::Decryptor(std::vector<unsigned char> chipher_text)
+    : chipher_text_(chipher_text)
+{}
+
+bool Decryptor::Decrypt(std::string& password)
 {
+    PasswordToKey(password);
     std::vector<unsigned char> hashFromCryptoFile;
     std::vector<unsigned char> hashDecryptoFile;
-    for (unsigned int i = 0; i < chipher_text.size(); ++i)
+    std::vector<unsigned char> current_chipher_text = chipher_text_;
+    for (unsigned int i = 0; i < current_chipher_text.size(); ++i)
     {
-        if (i >= (chipher_text.size() - 32))
+        if (i >= (current_chipher_text.size() - 32))
         {
-            hashFromCryptoFile.push_back(chipher_text[i]);
+            hashFromCryptoFile.push_back(current_chipher_text[i]);
         }
     }
-    chipher_text.resize(chipher_text.size() - hashFromCryptoFile.size());
-    std::vector<unsigned char> DecryptText;
-    if (DecryptAes(chipher_text, DecryptText))
-    {
-        CalculateHash(DecryptText, hashDecryptoFile);
+    current_chipher_text.resize(current_chipher_text.size() - hashFromCryptoFile.size());
+    decrypt_text_.clear();
+
+    if (DecryptAes(current_chipher_text, decrypt_text_))
+    {        
+        CalculateHash(decrypt_text_, hashDecryptoFile);
         if (!CompareHASH(hashFromCryptoFile, hashDecryptoFile))
         {
-            return false;   //"Password is wrong"
-        }
-        WriteFile("my_decrypto_file1", DecryptText);
-        return true;
+            decrypt_text_.clear();
+            return false;   // password did not decrypt the file
+        }        
+        WriteFile(decrypto_file_path, decrypt_text_);
+        return true; // password decrypt the file
     }
+    decrypt_text_.clear();
     return false;
 }
 
 bool Decryptor::DecryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned char>& chipherText)
 {
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
-    if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key_m, iv_m))
+    if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key_, iv_))
     {
         return false;
     }
@@ -66,12 +77,6 @@ void Decryptor::WriteFile(const std::string& filePath, const std::vector<unsigne
     fileStream.write(&buf[0], buf.size());
 }
 
-void Decryptor::AppendToFile(const std::string& filePath, const std::vector<unsigned char>& buf)
-{
-    std::basic_ofstream<unsigned char> fileStream(filePath, std::ios::binary | std::ios::app);
-    fileStream.write(&buf[0], buf.size());
-}
-
 void Decryptor::PasswordToKey(std::string& password)
 {
     const EVP_MD* dgst = EVP_get_digestbyname("md5");
@@ -82,7 +87,7 @@ void Decryptor::PasswordToKey(std::string& password)
     const unsigned char* salt = NULL;
     if (!EVP_BytesToKey(EVP_aes_128_cbc(), EVP_md5(), salt,
         reinterpret_cast<unsigned char*>(&password[0]),
-        password.size(), 1, key_m, iv_m))
+        password.size(), 1, key_, iv_))
     {
         throw std::runtime_error("EVP_BytesToKey failed");
     }

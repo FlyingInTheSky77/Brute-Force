@@ -83,25 +83,4 @@ void myReadFile(const std::string& filePath, std::vector<unsigned char>& buf)
 }
 
 
-std::string FreeFunctionToDecrypt(std::string* current_array_candidats_m, int start_index_in_array, const int& size_array_for_one_thread, const bool& write_cand_to_file, const std::vector<unsigned char>& text_from_file, std::shared_ptr<Counter> my_counter)
-{
-    Decryptor current_decryptor;
-    int current_index = start_index_in_array;
-    for (int i = start_index_in_array; i < size_array_for_one_thread + start_index_in_array; i++)
-    {
-        std::string temp = current_array_candidats_m[i];
-        current_decryptor.PasswordToKey(current_array_candidats_m[i]);
-        my_counter->Calculate();
-        
-        if (current_decryptor.Decrypt(text_from_file))
-        {            
-            if (write_cand_to_file)
-            {
-                    WriteDownToFileTriedPassword(current_array_candidats_m, start_index_in_array, i, my_counter->GetMutex());                
-            }
-            return current_array_candidats_m[i]; //we guess the password
-        }
-    }
-    WriteDownToFileTriedPassword(current_array_candidats_m, start_index_in_array, size_array_for_one_thread, my_counter->GetMutex());
-    return "";//we didn't guess the password
-}
+
