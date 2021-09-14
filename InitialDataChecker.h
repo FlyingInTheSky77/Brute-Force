@@ -4,7 +4,6 @@
 class Counter;
 
 void WriteDownToFileTriedPassword(std::string* current_vector_candidats_m, int start_index_in_array, const int& current_index, std::mutex& cur_mutex);
-void myReadFile(const std::string& filePath, std::vector<unsigned char>& buf);
 
 class InitialDataChecker {
 public:

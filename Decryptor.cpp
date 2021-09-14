@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "OptionSelectionFunctions.h"
+//#include "InitialDataChecker.h"
 #include "Decryptor.h"
 #include <chrono>
 
