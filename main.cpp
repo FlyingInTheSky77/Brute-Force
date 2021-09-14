@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "BruteForceAttacker.h"
 #include "Encryptor.h"
-//#include "Decryptor.h"
 #include "InitialDataChecker.h"
 
 int main(int argc, char* argv[])
