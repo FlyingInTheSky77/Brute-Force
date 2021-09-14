@@ -20,7 +20,6 @@ private:
 	std::vector<unsigned char> chipherText_;
 
 	void EncryptAes();
-	void myReadFile();
 	void WriteFile();
 	void AppendToFile();
 	void CalculateHash();

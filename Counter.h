@@ -21,15 +21,13 @@ public:
     unsigned int GetPresetNumberInMainCycle();
     void SetNumberInCycle(unsigned int number_in_cycle_main);
     std::mutex& GetMutex();
-    void WriteTriedCandidateToVector(std::string current_pass_candidate);
 
 private:
-    unsigned int number_tried_passcandidate_in_show_cycle_m;
-    unsigned int number_all_tried_passcandidate_m;
-    unsigned int number_for_now_in_cycle_main_m;
-    std::mutex mutex_counter_m;
-    // for debug
-    std::vector<std::string> vector_tried_pass; 
-    unsigned int number_in_cycle_main_m;
+    unsigned int number_tried_passcandidate_in_show_cycle_;
+    unsigned int number_all_tried_passcandidate_;
+    unsigned int number_for_now_in_cycle_main_;
+    std::mutex mutex_counter_;
+
+    unsigned int number_in_cycle_main_;
 };
 

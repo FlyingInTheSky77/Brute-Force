@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Encryptor.h"
+#include "FileReader.h"
+#include "FileWriter.h"
 
 const std::string default_encryption_password{"www"};
 
@@ -23,11 +25,13 @@ void Encryptor::start() {
 
 void Encryptor::Encrypt()
 {
-    myReadFile();
+    std::unique_ptr<IDataReader> data_reader = std::make_unique<FileReader>();
+    plainText_ = data_reader->ReadData(file_path_);
     CalculateHash();
     EncryptAes();
-    WriteFile();
-    AppendToFile();
+    std::unique_ptr<IDataWriter> data_writer = std::make_unique<FileWriter>();
+    chipherText_.insert(chipherText_.end(), hash_.begin(), hash_.end());
+    data_writer->WriteData(crypto_file_path_, chipherText_);
 }
 
 void Encryptor::EncryptAes()
@@ -55,35 +59,6 @@ void Encryptor::EncryptAes()
     chipherText_.swap(chipherTextBuf);
 
     EVP_CIPHER_CTX_free(ctx);
-}
-
-void Encryptor::myReadFile()
-{
-    std::basic_fstream<unsigned char> fileStream(file_path_, std::ios::binary | std::fstream::in);
-    if ( !fileStream.is_open() )
-    {
-        throw std::runtime_error("Can not open file " + file_path_);
-    }
-
-    plainText_.clear();
-    plainText_.insert(plainText_.begin(), std::istreambuf_iterator<unsigned char>(fileStream), std::istreambuf_iterator<unsigned char>());
-
-    fileStream.close();
-}
-
-void Encryptor::WriteFile()
-{
-    std::basic_ofstream<unsigned char> fileStream(crypto_file_path_, std::ios::binary);
-  
-    fileStream.write(&chipherText_[0], chipherText_.size()); 
-    fileStream.close();
-}
-
-void Encryptor::AppendToFile()
-{
-    std::basic_ofstream<unsigned char> fileStream(crypto_file_path_, std::ios::binary | std::ios::app);
-    fileStream.write(&hash_[0], hash_.size());
-    fileStream.close();
 }
 
 void Encryptor::PasswordToKey(std::string& password)
