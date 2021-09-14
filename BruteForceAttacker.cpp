@@ -2,7 +2,7 @@
 #include "BruteForceAttacker.h"
 #include "Decryptor.h"
 #include "Encryptor.h"
-#include "OptionSelectionFunctions.h"
+#include "InitialDataChecker.h"
 #include "PassGenerateFunction.h"
 #include <thread>
 #include "Counter.h"
@@ -10,7 +10,7 @@
 const int number_of_candidate_passwords_for_one_run{ 10000 };
 
 BruteForceAttacker::BruteForceAttacker(bool write_passcandidate_to_file, unsigned int number_thread_and_decryptors, std::string file_path)
-    : number_thread_and_decryptors_m(number_thread_and_decryptors)
+    : threads_number_(number_thread_and_decryptors)
     , decrypt_status_m(false)
     , number_in_cycle_main_m(number_of_candidate_passwords_for_one_run)
     , write_to_file_all_tried_passcandidate_m(write_passcandidate_to_file)
@@ -65,14 +65,14 @@ void BruteForceAttacker::startDecrypt()
     int indexI = 1;
     bool big_loop_end = false;
     int number_for_all_threads = number_in_cycle_main_m;
-    int number_for_one_thread = number_for_all_threads / number_thread_and_decryptors_m;
+    //int number_for_one_thread = number_for_all_threads / threads_number_;
     std::string* bunch_pass_candidates = new std::string[number_for_all_threads];
     bool start_first = true;
     while (!decrypt_status_m)
     { 
         int indexT = 0;
         bunch_pass_candidates = generatePasswordVariant(number_for_all_threads, std::ref(indexJ), std::ref(indexN), std::ref(pos_symbols_NEW), std::ref(bunch_pass_candidates), std::ref(indexI), std::ref(big_loop_end), std::ref(indexT), std::ref(start_first));
-        StartAsyncThreadsWithDecriporInside(number_thread_and_decryptors_m, bunch_pass_candidates, my_shp_counter);
+        StartAsyncThreadsWithDecriporInside(threads_number_, bunch_pass_candidates, my_shp_counter);
         my_shp_counter->ResetTriedPasscandidateInCycleMain();
     }
     PrintInthread.join();
@@ -97,4 +97,15 @@ std::string FreeFunctionToDecrypt(std::string* current_array_candidats_m, int st
     }
     WriteDownToFileTriedPassword(current_array_candidats_m, start_index_in_array, size_array_for_one_thread, my_counter->GetMutex());
     return "";//we didn't guess the password
+}
+
+void BruteForceAttacker::myReadFile(const std::string& filePath, std::vector<unsigned char>& buf)
+{
+    std::basic_fstream<unsigned char> fileStream(filePath, std::ios::binary | std::fstream::in);
+    if (!fileStream.is_open())
+    {
+        throw std::runtime_error("Can not open file " + filePath);
+    }
+    buf.clear();
+    buf.insert(buf.begin(), std::istreambuf_iterator<unsigned char>(fileStream), std::istreambuf_iterator<unsigned char>());
 }

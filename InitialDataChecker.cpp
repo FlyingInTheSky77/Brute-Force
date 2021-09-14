@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "OptionSelectionFunctions.h"
+#include "InitialDataChecker.h"
 #include "Decryptor.h"
 #include "Printer.h"
 #include "Counter.h"
@@ -69,17 +69,6 @@ void WriteDownToFileTriedPassword(std::string* current_vector_candidats_m, int s
         out << current_vector_candidats_m[i] << std::endl;
     }
     out.close();
-}
-
-void myReadFile(const std::string& filePath, std::vector<unsigned char>& buf)
-{
-    std::basic_fstream<unsigned char> fileStream(filePath, std::ios::binary | std::fstream::in);
-    if (!fileStream.is_open())
-    {
-        throw std::runtime_error("Can not open file " + filePath);
-    }
-    buf.clear();
-    buf.insert(buf.begin(), std::istreambuf_iterator<unsigned char>(fileStream), std::istreambuf_iterator<unsigned char>());
 }
 
 

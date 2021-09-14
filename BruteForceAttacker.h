@@ -3,8 +3,8 @@
 #include <mutex>
 #include <thread>
 #include "stdafx.h"
-#include "Encryptor.h"
-#include "Decryptor.h"
+//#include "Encryptor.h"
+//#include "Decryptor.h"
 #include "Timer.h"
 #include "Printer.h"
 
@@ -18,13 +18,15 @@ public:
 
 private:
     Timer timer_;
-    unsigned int number_thread_and_decryptors_m;
+    unsigned int threads_number_;
     bool decrypt_status_m;
     std::string password_that_opened_the_file_m;
     bool write_to_file_all_tried_passcandidate_m;
     std::string file_path_m;
     std::vector<unsigned char> text_from_file_m;
     int number_in_cycle_main_m;
+
+    void myReadFile(const std::string& filePath, std::vector<unsigned char>& buf);
 };
 
 std::string FreeFunctionToDecrypt(std::string* current_array_candidats_m, int start_index_in_array, const int& size_array_for_one_thread, const bool& write_cand_to_file, const std::vector<unsigned char>& text_from_file, std::shared_ptr<Counter> my_counter);
