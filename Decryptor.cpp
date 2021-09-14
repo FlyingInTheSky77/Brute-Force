@@ -1,6 +1,7 @@
 #include "stdafx.h"
-//#include "InitialDataChecker.h"
 #include "Decryptor.h"
+#include "FileWriter.h"
+#include <memory>
 #include <chrono>
 
 const std::string decrypto_file_path{ "my_decrypto_file1" };
@@ -31,10 +32,11 @@ bool Decryptor::Decrypt(std::string& password)
         if (!CompareHASH(hashFromCryptoFile, hashDecryptoFile))
         {
             decrypt_text_.clear();
-            return false;   // password did not decrypt the file
-        }        
-        WriteFile(decrypto_file_path, decrypt_text_);
-        return true; // password decrypt the file
+            return false;   // password candidate did not decrypt the file
+        }
+        std::unique_ptr IDataWriter = std::make_unique<FileWriter>();
+        IDataWriter->WriteData(decrypto_file_path, decrypt_text_);
+        return true; // password candidate decrypt the file
     }
     decrypt_text_.clear();
     return false;

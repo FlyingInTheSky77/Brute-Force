@@ -70,6 +70,3 @@ void WriteDownToFileTriedPassword(std::string* current_vector_candidats_m, int s
     }
     out.close();
 }
-
-
-
