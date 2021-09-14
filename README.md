@@ -10,6 +10,25 @@ When brute-force is used, the program displays the speed of guessing passwords, 
 
 At the request of the user, the program can record all candidate passwords used during brute-force.
 
+---- SOME SCREENSOTS ----
+
+encryptyng:
+
+
+![image](https://user-images.githubusercontent.com/52506956/133293661-b476b849-6882-4b79-ae22-6f4f23aac713.png)
+
+
+brute-force in progress:
+
+
+![image](https://user-images.githubusercontent.com/52506956/133293986-1d848d56-7838-4e75-954b-2ee0384f0216.png)
+
+result of brute-force:
+
+![image](https://user-images.githubusercontent.com/52506956/133294361-304c1f59-2e2b-409b-bfd9-967a761eda84.png)
+
+PS speed and total brute-force time depends on your computer ;-)
+
 ---- HOW TO USE ----
 
 run program in console and first param after program name write filename with path, wich you want to crypt or decrypt. If you want to save all tried candidate passwords, after filename/filepath write "--log_passwords".
